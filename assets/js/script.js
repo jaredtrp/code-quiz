@@ -38,45 +38,128 @@
 // Display "Game Over" and score
 // give link to high scores
 
+const questionContainerEl = document.getElementById('question-container');
 const startText = document.getElementById('start-text');
 const startButton = document.getElementById('start-btn');
+const timerEl = document.getElementById('timer');
+const questionElement = document.getElementById('question');
+const answerButtonsElement = document.getElementById('answer-buttons');
+
+let questionShuffler, questionsIndex
 
 startButton.addEventListener('click', startGame);
 
 const questions = [
     {
-        question: 'What is 2 + 2',
+        question: 'What is 2 + 1?',
         answers: [
-            { text: '4', correct: true },
+            { text: '3', correct: true },
             { text: '22', correct: false},
             { text: '23', correct: false},
             { text: '24', correct: false}
         ]
     },
     {
-        question: 'What is 4 + 2',
+        question: 'What is 2 + 2?',
+        answers: [
+            { text: '4', correct: true },
+            { text: '27', correct: false },
+            { text: '23', correct: false },
+            { text: '22', correct: false }
+        ]
+    },
+    {
+        question: 'What is 2 + 3?',
+        answers: [
+            { text: '5', correct: true },
+            { text: '27', correct: false },
+            { text: '23', correct: false },
+            { text: '22', correct: false }
+        ]
+    },
+    {
+        question: 'What is 2 + 4?',
         answers: [
             { text: '6', correct: true },
-            { text: '27', correct: false},
-            { text: '23', correct: false},
-            { text: '22', correct: false}
+            { text: '27', correct: false },
+            { text: '23', correct: false },
+            { text: '22', correct: false }
         ]
-    }
+    },
 ]
 
-function startGame() {
-    console.log('Started')
-    startButton.classList.add('hide')
-    startText.classList.add('hide')
-    nextQuestion()
-};
+// function questionShuffler = question.sort(() => Math.random() - .5)
 
-// const questionShuffler
+function startGame() {
+    startText.classList.add('hide')
+    startButton.classList.add('hide')
+    questionContainerEl.classList.remove('hide')
+    // currentQuestionIndex = 0
+    countdown();
+    showQuestion();
+};
 
 function nextQuestion() {
-
+    
 };
+
+function showQuestion(question) {
+    questionElement.innerText = question.question
+    question.answers.forEach(answer => {
+        const button = document.createElement('button')
+        button.innerText = answer.text
+        button.classList.add('btn')
+        if (answer.correct) {
+            button.dataset.correct = answer.correct
+        }
+        button.addEventListener('click', selectAnswer)
+        answerButtonsElement.appendChild(button)
+    })
+}
 
 function selectAnswer() {
+    const selectedButton = e.target
+    const correct = selectedButton.dataset.correct
+    setStatusClass(document.body, correct)
+    Array.from(answerButtonsElement.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct)
+    })
+    if (shuffleQuestions.length > currentQuestionsIndex + 1) {
 
+    }
 };
+
+function setStatusClass(element, correct) {
+    clearStatusClass(element)
+    if (correct) {
+        element.classList.add('correct')
+    } else {
+        element.classList.add('wrong')
+    }
+}
+
+function clearStatusClass(element) {
+    element.classList.remove('correct')
+    element.classList.remove('wrong')
+}
+
+function countdown() {
+    let timeLeft = 120;
+  
+    // Use the `setInterval()` method to call a function to be executed every 1000 milliseconds
+    let timeInterval = setInterval(function () {
+      // As long as the `timeLeft` is greater than 1
+      if (timeLeft > 0) {
+        // Set the `textContent` of `timerEl` to show the remaining seconds
+        timerEl.textContent = 'Time:' + timeLeft
+        // Decrement `timeLeft` by 1
+        timeLeft--;
+      } else {
+        timerEl.textContent = 'Time is up!'
+        // Use `clearInterval()` to stop the timer
+        clearInterval(timeInterval);
+        // Ends the quiz
+        endQuiz();
+      }
+    });
+  }

@@ -38,10 +38,45 @@
 // Display "Game Over" and score
 // give link to high scores
 
+const startText = document.getElementById('start-text');
 const startButton = document.getElementById('start-btn');
 
-startButton.addEventListener('click', startGame)
+startButton.addEventListener('click', startGame);
+
+const questions = [
+    {
+        question: 'What is 2 + 2',
+        answers: [
+            { text: '4', correct: true },
+            { text: '22', correct: false},
+            { text: '23', correct: false},
+            { text: '24', correct: false}
+        ]
+    },
+    {
+        question: 'What is 4 + 2',
+        answers: [
+            { text: '6', correct: true },
+            { text: '27', correct: false},
+            { text: '23', correct: false},
+            { text: '22', correct: false}
+        ]
+    }
+]
 
 function startGame() {
     console.log('Started')
-}
+    startButton.classList.add('hide')
+    startText.classList.add('hide')
+    nextQuestion()
+};
+
+// const questionShuffler
+
+function nextQuestion() {
+
+};
+
+function selectAnswer() {
+
+};

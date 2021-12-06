@@ -38,110 +38,114 @@
 // Display "Game Over" and score
 // give link to high scores
 
-const questionContainerEl = document.getElementById('question-container');
-const startText = document.getElementById('start-text');
-const startButton = document.getElementById('start-btn');
-const timerEl = document.getElementById('timer');
-const questionElement = document.getElementById('question');
-const answerButtonsElement = document.getElementById('answer-buttons');
 
-let questionShuffler, questionsIndex
 
-startButton.addEventListener('click', startGame);
+// const questionContainerEl = document.getElementById('quiz-container');
+// const startText = document.getElementById('start-text');
+// const startButton = document.getElementById('start-btn');
+const nextButton = document.getElementById('next-button-container');
+const timerEl = document.getElementById('timer-container');
+const questionEl = document.getElementById('question-container');
+const choices = Array.from(document.getElementById('choice-container'));
 
-const questions = [
+const correctBonus = 1;
+const maxQuestions = 4;
+
+let score = 0;
+let currentQuestion = {};
+let acceptingAnswers = false;
+let questionCounter = 0;
+let availableQuestions = [];
+
+let questions = [
     {
         question: 'What is 2 + 1?',
-        answers: [
-            { text: '3', correct: true },
-            { text: '22', correct: false},
-            { text: '23', correct: false},
-            { text: '24', correct: false}
-        ]
+        choice1: '3',
+        choice2: '4',
+        choice3: '5',
+        choice4: '6',
+        answer: 1
     },
     {
         question: 'What is 2 + 2?',
-        answers: [
-            { text: '4', correct: true },
-            { text: '27', correct: false },
-            { text: '23', correct: false },
-            { text: '22', correct: false }
-        ]
+        choice1: '4',
+        choice2: '5',
+        choice3: '6',
+        choice4: '7',
+        answer: 2
     },
     {
         question: 'What is 2 + 3?',
-        answers: [
-            { text: '5', correct: true },
-            { text: '27', correct: false },
-            { text: '23', correct: false },
-            { text: '22', correct: false }
-        ]
+        choice1: '5',
+        choice2: '6',
+        choice3: '7',
+        choice4: '8',
+        answer: 3
     },
     {
         question: 'What is 2 + 4?',
-        answers: [
-            { text: '6', correct: true },
-            { text: '27', correct: false },
-            { text: '23', correct: false },
-            { text: '22', correct: false }
-        ]
-    },
-]
-
-// function questionShuffler = question.sort(() => Math.random() - .5)
+        choice1: '6',
+        choice2: '7',
+        choice3: '8',
+        choice4: '9',
+        answer: 4
+    }
+];
 
 function startGame() {
-    startText.classList.add('hide')
-    startButton.classList.add('hide')
-    questionContainerEl.classList.remove('hide')
-    // currentQuestionIndex = 0
-    countdown();
-    showQuestion();
+    questionCounter = 0;
+    score = 0;
+    availableQuestions = [...questions];
+    console.log(availableQuestions);
+    // countdown();
+    newQuestions();
 };
 
-function nextQuestion() {
-    
-};
-
-function showQuestion(question) {
-    questionElement.innerText = question.question
-    question.answers.forEach(answer => {
-        const button = document.createElement('button')
-        button.innerText = answer.text
-        button.classList.add('btn')
-        if (answer.correct) {
-            button.dataset.correct = answer.correct
+function newQuestions() {
+        if(availableQuestions.length === 0 || questionsCounter >= maxQuestions) {
+            endGame();
         }
-        button.addEventListener('click', selectAnswer)
-        answerButtonsElement.appendChild(button)
-    })
-}
+    questionCounter++;
+    const questionIndex = Math.floor(Math.random() * availableQuestions.length);
+    currentQuestion = availableQuestions[questionIndex];
+    questionEl.innerText = currentQuestion.question;
+    
+    choices.forEach(choice => {
+        const number = choice.dataset['number'];
+        choice.innerText = currentQuestion['choice' + number];
+    });
 
-function selectAnswer() {
-    const selectedButton = e.target
-    const correct = selectedButton.dataset.correct
-    setStatusClass(document.body, correct)
-    Array.from(answerButtonsElement.children).forEach(button => {
-        setStatusClass(button, button.dataset.correct)
-    })
-    if (shuffleQuestions.length > currentQuestionsIndex + 1) {
+    availableQuestions.splice(questionIndex, 1);
 
-    }
+    acceptingAnswers = true;
 };
 
-function setStatusClass(element, correct) {
-    clearStatusClass(element)
-    if (correct) {
-        element.classList.add('correct')
-    } else {
-        element.classList.add('wrong')
-    }
-}
+startGame();
 
-function clearStatusClass(element) {
-    element.classList.remove('correct')
-    element.classList.remove('wrong')
-}
+// choices.forEach(choice => {
+//     choice.addEventListener('click', e => {
+//         if(!acceptingAnswers) return;
+
+//         acceptingAnswers = false;
+//         const selectedChoice = e.target;
+//         const selectedAnswer = selectedChoice.dataset["number"];
+//         newQuestion();
+//     });
+// });
+
+// function answerStatus (element, correct) {
+//     clearStatusClass(element)
+//     if (correct) {
+//         element.classList.add('correct')
+//     } else {
+//         element.classList.add('incorrect')
+//     }
+// }
+
+// function clearStatusClass(element) {
+//     element.classList.remove('correct')
+//     element.classList.remove('wrong')
+// }
 
 function countdown() {
     let timeLeft = 120;
@@ -156,10 +160,16 @@ function countdown() {
         timeLeft--;
       } else {
         timerEl.textContent = 'Time is up!'
+        endGame();
         // Use `clearInterval()` to stop the timer
-        clearInterval(timeInterval);
+        // clearInterval(timeInterval);
         // Ends the quiz
-        endQuiz();
+        // endQuiz();
       }
-    });
+    }, 1000);
+  }
+
+  function endGame() {
+    // End the game either by running out of time or finishing all the questions
+    // The score is the time remaining
   }
